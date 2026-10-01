@@ -5,7 +5,7 @@ public class Slon {
     private static final String CMD_EXIT = "\\exit";
 
     private static final String QUESTION = "Купи слона!";
-    private static final String REPEAT_QUESTION = "А ты купи слона!";
+    private static final String REPEAT_QUESTION = "А ты купи слона g;g;g;!";
 
     public String greeting() {
         return String.format(
