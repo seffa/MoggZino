@@ -1,34 +1,49 @@
 package org.example;
-import java.util.Scanner;
+
+import org.telegram.telegrambots.bots.DefaultBotOptions;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        Phrases P_main = new Phrases();
-        Level1 main1 = new Level1();
+        String token = System.getenv("TELEGRAM_BOT_TOKEN");
+        String username = System.getenv("TELEGRAM_BOT_USERNAME");
 
-        while(main1.GetDeposit() < 1000){
-            System.out.println(P_main.GetRulesLevel1());
+        if (token == null || token.isBlank()) {
+            System.err.println("Не задан TELEGRAM_BOT_TOKEN.");
+            return;
+        }
+        if (username == null || username.isBlank()) {
+            System.err.println("Не задан TELEGRAM_BOT_USERNAME.");
+            return;
+        }
 
-            String s1 = sc.nextLine();
-            String[] str = s1.split(" ");
+        DefaultBotOptions options = new DefaultBotOptions();
 
-            if(str[0].equals("\\q")) {
-                break;
-            } else {
-                System.out.println(main1.lv1_out(s1));
+        // Прокси включается ТОЛЬКО если заданы обе переменные окружения.
+        String proxyHost = System.getenv("TELEGRAM_PROXY_HOST");
+        String proxyPort = System.getenv("TELEGRAM_PROXY_PORT");
+        if (proxyHost != null && !proxyHost.isBlank()
+                && proxyPort != null && !proxyPort.isBlank()) {
+            try {
+                // ВАЖНО: enum из самой библиотеки, НЕ java.net.Proxy.Type
+                options.setProxyType(DefaultBotOptions.ProxyType.HTTP);
+                options.setProxyHost(proxyHost);
+                options.setProxyPort(Integer.parseInt(proxyPort));
+                System.out.println("Использую HTTP-прокси: " + proxyHost + ":" + proxyPort);
+            } catch (NumberFormatException e) {
+                System.err.println("Неверный TELEGRAM_PROXY_PORT: " + proxyPort);
+                return;
             }
+        }
 
+        try {
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            botsApi.registerBot(new MoggzinBot(token, username, options));
+            System.out.println("Telegram bot запущен. Жду сообщения...");
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 }
-
-/*else if (str[0].equals("\\bet")){
-        System.out.println(main1.Game_level1(str[1], Integer.parseInt(str[2])));
-        }else if(str[0].equals("\\slots")){
-        System.out.println(P_main.GetSlots());
-        }else if(str[0].equals("\\bones")){
-        System.out.println(P_main.GetRulesBones());
-        }else {
-        System.out.println(P_main.GetError());
-        }*/

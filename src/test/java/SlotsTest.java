@@ -14,16 +14,11 @@ class SlotsTest {
 
     @Test
     void testGameWinAllSame() {
-        // Тест выигрыша когда все символы одинаковые
         Slots testSlots = new Slots();
         int initialDeposit = 100;
         int bet = 10;
-
-        // Создаем слоты с известными символами через рефлексию или моки
-        // Для простоты тестируем логику через многократные запуски
         int result = testSlots.game(initialDeposit, bet);
 
-        // Депозит должен измениться (выигрыш или проигрыш)
         assertNotEquals(initialDeposit, result);
     }
 
@@ -48,7 +43,6 @@ class SlotsTest {
 
         int result = testSlots.game(initialDeposit, bet);
 
-        // Депозит должен уменьшиться на ставку
         assertTrue(result <= initialDeposit);
     }
 

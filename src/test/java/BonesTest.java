@@ -14,16 +14,11 @@ class BonesTest {
 
     @Test
     void testGameWin7() {
-        // Создаем кости с суммой 7
         Bones testBones = new Bones();
         int initialDeposit = 100;
         int bet = 10;
 
         int result = testBones.game(initialDeposit, bet);
-
-        // Депозит должен увеличиться (если выпала 7 или 11)
-        // или уменьшиться (если 2 или 12)
-        // или остаться прежним (остальное)
         assertTrue(result >= initialDeposit - bet && result <= initialDeposit + bet * 3);
     }
 
@@ -35,7 +30,6 @@ class BonesTest {
 
         int result = testBones.game(initialDeposit, bet);
 
-        // Проверяем, что депозит не превышает максимальный выигрыш
         assertTrue(result <= initialDeposit + bet * 3);
     }
 
@@ -47,7 +41,6 @@ class BonesTest {
 
         int result = testBones.game(initialDeposit, bet);
 
-        // Депозит должен быть в допустимых пределах
         assertTrue(result >= initialDeposit - bet);
     }
 
@@ -63,12 +56,10 @@ class BonesTest {
 
     @Test
     void testDiceRange() {
-        // Запускаем много раз, чтобы проверить диапазон значений
         for (int i = 0; i < 100; i++) {
             Bones testBones = new Bones();
             String result = testBones.getResult();
 
-            // Извлекаем числа из результата
             String[] parts = result.split("[^0-9]+");
             int dice1 = Integer.parseInt(parts[1]);
             int dice2 = Integer.parseInt(parts[2]);

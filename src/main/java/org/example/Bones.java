@@ -17,10 +17,6 @@ public class Bones {
 
     public int game(int deposit, int bet) {
         int sum = dice1 + dice2;
-
-        // 7 или 11 - выигрыш x3
-        // 2 или 12 - проигрыш (ставка уходит)
-        // Остальное - возврат ставки
         if (sum == 7 || sum == 11) {
             return deposit + bet * 3;
         } else if (sum == 2 || sum == 12) {
