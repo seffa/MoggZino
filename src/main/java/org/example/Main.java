@@ -7,41 +7,37 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
     public static void main(String[] args) {
+        // токен от botfather
         String token = System.getenv("TELEGRAM_BOT_TOKEN");
         String username = System.getenv("TELEGRAM_BOT_USERNAME");
-
         if (token == null || token.isBlank()) {
-            System.err.println("Не задан TELEGRAM_BOT_TOKEN.");
+            System.out.println("не задан токен");
             return;
         }
         if (username == null || username.isBlank()) {
-            System.err.println("Не задан TELEGRAM_BOT_USERNAME.");
+            System.out.println("не задан username бота");
             return;
         }
 
         DefaultBotOptions options = new DefaultBotOptions();
-
-        // Прокси включается ТОЛЬКО если заданы обе переменные окружения.
-        String proxyHost = System.getenv("TELEGRAM_PROXY_HOST");
-        String proxyPort = System.getenv("TELEGRAM_PROXY_PORT");
-        if (proxyHost != null && !proxyHost.isBlank()
-                && proxyPort != null && !proxyPort.isBlank()) {
+        String ph = System.getenv("TELEGRAM_PROXY_HOST");
+        String pp = System.getenv("TELEGRAM_PROXY_PORT");
+        if (ph != null && !ph.isBlank() && pp != null && !pp.isBlank()) {
             try {
-                // ВАЖНО: enum из самой библиотеки, НЕ java.net.Proxy.Type
                 options.setProxyType(DefaultBotOptions.ProxyType.HTTP);
-                options.setProxyHost(proxyHost);
-                options.setProxyPort(Integer.parseInt(proxyPort));
-                System.out.println("Использую HTTP-прокси: " + proxyHost + ":" + proxyPort);
+                options.setProxyHost(ph);
+                options.setProxyPort(Integer.parseInt(pp));
+                System.out.println("прокси " + ph + ":" + pp);
             } catch (NumberFormatException e) {
-                System.err.println("Неверный TELEGRAM_PROXY_PORT: " + proxyPort);
+                System.out.println("кривой порт прокси");
                 return;
             }
         }
 
         try {
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(new MoggzinBot(token, username, options));
-            System.out.println("Telegram bot запущен. Жду сообщения...");
+            TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
+            api.registerBot(new MoggzinBot(token, username, options));
+            System.out.println("бот запущен");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

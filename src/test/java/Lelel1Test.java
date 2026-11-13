@@ -1,67 +1,59 @@
 package org.example;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class Level1Test {
-    private Level1 level1;
-
-    @BeforeEach
-    void setUp() {
-        level1 = new Level1();
-    }
 
     @Test
     void testInitialDeposit() {
-        assertEquals(100, level1.GetDeposit());
+        Level1 l = new Level1();
+        assertEquals(100, l.GetDeposit());
     }
 
     @Test
     void testLv1OutSlots() {
-        String result = level1.lv1_out("\\slots");
-        assertNotNull(result);
-        assertTrue(result.contains("СЛОТЫ"));
+        Level1 l = new Level1();
+        String r = l.lv1_out("\\slots");
+        assertNotNull(r);
+        assertTrue(r.contains("СЛОТЫ"));
     }
 
     @Test
     void testLv1OutBones() {
-        String result = level1.lv1_out("\\bones");
-        assertNotNull(result);
-        assertTrue(result.contains("КОСТИ") || result.contains("кости"));
+        Level1 l = new Level1();
+        String r = l.lv1_out("\\bones");
+        assertNotNull(r);
+        assertTrue(r.contains("КОСТИ") || r.contains("кости"));
     }
 
     @Test
     void testLv1OutError() {
-        String result = level1.lv1_out("\\invalid");
-        assertNotNull(result);
-        assertTrue(result.contains("ошибка"));
+        Level1 l = new Level1();
+        String r = l.lv1_out("\\invalid");
+        assertNotNull(r);
+        assertTrue(r.contains("ошибка"));
     }
 
     @Test
     void testGameLevel1Slots() {
-        int initialDeposit = level1.GetDeposit();
-        String result = level1.Game_level1("slots", 10);
-
-        assertNotNull(result);
-        assertTrue(result.contains("твой депозит"));
-
-        int newDeposit = level1.GetDeposit();
-        // Проверяем, что депозит в разумных пределах (минус ставка или плюс выигрыш)
-        assertTrue(newDeposit >= initialDeposit - 10 && newDeposit <= initialDeposit + 100,
-                "Депозит должен быть в диапазоне от 90 до 200, а был: " + newDeposit);
+        Level1 l = new Level1();
+        int d = l.GetDeposit();
+        String r = l.Game_level1("slots", 10);
+        assertNotNull(r);
+        assertTrue(r.contains("твой депозит"));
+        int d2 = l.GetDeposit();
+        assertTrue(d2 >= d - 10 && d2 <= d + 100);
     }
 
     @Test
     void testGameLevel1Bones() {
-        int initialDeposit = level1.GetDeposit();
-        String result = level1.Game_level1("bones", 10);
-
-        assertNotNull(result);
-        assertTrue(result.contains("твой депозит"));
-
-        int newDeposit = level1.GetDeposit();
-        assertTrue(newDeposit >= initialDeposit - 10 && newDeposit <= initialDeposit + 30,
-                "Депозит должен быть в диапазоне от 90 до 130, а был: " + newDeposit);
+        Level1 l = new Level1();
+        int d = l.GetDeposit();
+        String r = l.Game_level1("bones", 10);
+        assertNotNull(r);
+        assertTrue(r.contains("твой депозит"));
+        int d2 = l.GetDeposit();
+        assertTrue(d2 >= d - 10 && d2 <= d + 30);
     }
 }

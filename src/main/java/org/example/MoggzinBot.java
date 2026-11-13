@@ -12,92 +12,64 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MoggzinBot extends TelegramLongPollingBot {
 
-    private final String botUsername;
-    private final Phrases phrases = new Phrases();
+    private String uname;
+    private Phrases ph = new Phrases();
+    // карта чат -> игрок
+    private Map<Long, Level1> users = new ConcurrentHashMap<>();
 
-    private final Map<Long, Level1> users = new ConcurrentHashMap<>();
-
-    public MoggzinBot(String botToken, String botUsername) {
-        super(botToken);
-        this.botUsername = botUsername;
-    }
-
-    public MoggzinBot(String botToken, String botUsername, DefaultBotOptions options) {
-        super(options, botToken);
-        this.botUsername = botUsername;
+    public MoggzinBot(String token, String uname, DefaultBotOptions opt) {
+        super(opt, token);
+        this.uname = uname;
     }
 
     @Override
     public String getBotUsername() {
-        return botUsername;
+        return uname;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return;
-        }
-
-        Message message = update.getMessage();
-        long chatId = message.getChatId();
-        String text = message.getText();
-
-        String answer = handleCommand(chatId, text);
-        sendAnswer(chatId, answer);
+        if (!update.hasMessage() || !update.getMessage().hasText()) return;
+        Message msg = update.getMessage();
+        long cid = msg.getChatId();
+        String txt = msg.getText();
+        sendAnswer(cid, handle(cid, txt));
     }
 
-    private String handleCommand(long chatId, String text) {
-        Level1 level = users.computeIfAbsent(chatId, id -> new Level1());
+    private String handle(long cid, String txt) {
+        Level1 lv = users.get(cid);
+        if (lv == null) {
+            lv = new Level1();
+            users.put(cid, lv);
+        }
+        String n = norm(txt).toLowerCase();
+        if (n.equals("/start")) {
+            return ph.GetGreeting().replace("{deposit}", "" + lv.GetDeposit()) + "\n\n" + ph.GetHelp();
+        }
+        if (n.equals("/reset")) {
+            users.put(cid, new Level1());
+            return "сброс\nдепозит: 100";
+        }
+        String resp = lv.lv1_out(n);
+        if (lv.GetDeposit() <= 0) {
+            users.remove(cid);
+            resp += "\n\n" + ph.GetDefeat();
+        }
+        return resp;
+    }
 
-        String normalized = normalizeCommand(text);
+    private String norm(String t) {
+        t = t.trim();
+        if (t.startsWith("\\")) return "/" + t.substring(1);
+        return t;
+    }
 
+    private void sendAnswer(long cid, String t) {
+        SendMessage sm = new SendMessage();
+        sm.setChatId(cid + "");
+        sm.setText(t);
         try {
-            if (normalized.equalsIgnoreCase("/start")) {
-                return phrases.GetGreeting()
-                        .replace("{deposit}", String.valueOf(level.GetDeposit()))
-                        + "\n\n"
-                        + phrases.GetHelp();
-            }
-
-            if (normalized.equalsIgnoreCase("/reset")) {
-                users.put(chatId, new Level1());
-                return "Сессия сброшена.\nДепозит: 100";
-            }
-
-            String response = level.lv1_out(normalized);
-
-            if (level.GetDeposit() <= 0) {
-                users.remove(chatId);
-                response += "\n\n" + phrases.GetDefeat();
-            }
-
-            return response;
-        } catch (Exception e) {
-            return "Ошибка: " + e.getMessage();
-        }
-    }
-
-    private String normalizeCommand(String text) {
-        if (text == null) {
-            return "";
-        }
-
-        String trimmed = text.trim();
-
-        if (trimmed.startsWith("\\")) {
-            return "/" + trimmed.substring(1);
-        }
-
-        return trimmed;
-    }
-
-    private void sendAnswer(long chatId, String text) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(Long.toString(chatId));
-        sendMessage.setText(text);
-
-        try {
-            execute(sendMessage);
+            execute(sm);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

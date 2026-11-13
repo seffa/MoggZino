@@ -1,64 +1,50 @@
 package org.example;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SlotsTest {
-    private Slots slots;
 
-    @BeforeEach
-    void setUp() {
-        slots = new Slots();
+    @Test
+    void testGame() {
+        Slots s = new Slots();
+        int d = 100;
+        int b = 10;
+        int r = s.game(d, b);
+        assertNotEquals(d, r);
     }
 
     @Test
-    void testGameWinAllSame() {
-        Slots testSlots = new Slots();
-        int initialDeposit = 100;
-        int bet = 10;
-        int result = testSlots.game(initialDeposit, bet);
-
-        assertNotEquals(initialDeposit, result);
+    void testGame2() {
+        Slots s = new Slots();
+        int d = 100;
+        int b = 10;
+        int r = s.game(d, b);
+        assertTrue(r >= d - b);
     }
 
     @Test
-    void testGameTwoSame() {
-        Slots testSlots = new Slots();
-        int initialDeposit = 100;
-        int bet = 10;
-
-        int result = testSlots.game(initialDeposit, bet);
-
-        // Если два символа совпадают, депозит не меняется
-        // Тестируем через многократные запуски
-        assertTrue(result >= initialDeposit - bet);
-    }
-
-    @Test
-    void testGameAllDifferent() {
-        Slots testSlots = new Slots();
-        int initialDeposit = 100;
-        int bet = 10;
-
-        int result = testSlots.game(initialDeposit, bet);
-
-        assertTrue(result <= initialDeposit);
+    void testGame3() {
+        Slots s = new Slots();
+        int d = 100;
+        int b = 10;
+        int r = s.game(d, b);
+        assertTrue(r <= d);
     }
 
     @Test
     void testGetResult() {
-        String result = slots.getResult();
-
-        assertNotNull(result);
-        assertTrue(result.contains("|"));
+        Slots s = new Slots();
+        String r = s.getResult();
+        assertNotNull(r);
+        assertTrue(r.contains("|"));
     }
 
     @Test
     void testStart() {
-        String rules = slots.Start();
-
-        assertNotNull(rules);
-        assertTrue(rules.contains("СЛОТЫ"));
+        Slots s = new Slots();
+        String r = s.Start();
+        assertNotNull(r);
+        assertTrue(r.contains("СЛОТЫ"));
     }
 }
