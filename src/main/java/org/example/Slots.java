@@ -3,56 +3,71 @@ package org.example;
 import java.util.Random;
 
 public class Slots {
-    private String[] symbols;
+
+    private static final int reels = 3; //кол-во барабанов
+
+
     private Random random = new Random();
-    private String a, b, c;
+    private String[] spin = new String[reels];
 
     public Slots() {
-        symbols = new String[] {"BAR", "7", "\uD83C\uDF52", "\uD83C\uDF4B"};
-        a = getRandomSymbol();
-        b = getRandomSymbol();
-        c = getRandomSymbol();
+        for (int i = 0; i < reels; i++) {
+            spin[i] = getRandomSymbol();
+        }
     }
 
-    public String Start(){
-        Phrases slot = new Phrases();
-        return slot.GetSlots();
+    public String Start() {
+        return new Phrases().GetSlots();
     }
 
     private String getRandomSymbol() {
         int roll = random.nextInt(100);
-
-        if (roll < 40) {
-            return "\uD83C\uDF52";
-        } else if (roll < 70) {
-            return "\uD83C\uDF4B";
-        } else if (roll < 90) {
-            return "BAR";
-        } else {
-            return "7";
-        }
+        if (roll < 40) return "\uD83C\uDF52";
+        if (roll < 70) return "\uD83C\uDF4B";
+        if (roll < 90) return "BAR";
+        return "7";
     }
 
-    public int game(int depos, int bet){
-        if(a == b && b == c){
-            if (a == "\uD83C\uDF52") {
-                bet = bet * 2;
-            }else if (a=="\uD83C\uDF4B"){
-                bet = bet * 3;
-            }else if(a == "BAR"){
-                bet = bet * 5;
-            } else{
-                bet = bet * 10;
+    public int game(int depos, int bet) {
+        int max = 1;
+        for (int i = 0; i < reels; i++) {
+            int count = 0;
+            for (int j = 0; j < reels; j++) {
+                if (spin[i].equals(spin[j])){
+                    count++;
+                }
             }
-            return depos + bet;
-        } else if(a==b || b==c || a==c){
-            return depos;
+            if (count > max){
+                max = count;
+            }
         }
-        else {
+
+        if (max == reels) {
+            if (spin[0].equals("\uD83C\uDF52")){
+                return depos + bet * 2;
+            }
+            if (spin[0].equals("\uD83C\uDF4B")) {
+                return depos + bet * 3;
+            }
+            if (spin[0].equals("BAR")){
+                return depos + bet * 5;
+            }
+            return depos + bet * 10;
+        } else if (max >= 2) {
+            return depos;
+        } else {
             return depos - bet;
         }
-
     }
 
-    public String getResult(){ return a + " | " + b + " | " + c;}
+    public String getResult() {
+        String s = "";
+        for (int i = 0; i < reels; i++) {
+            if (i > 0) {
+                s += " | ";
+            }
+            s += spin[i];
+        }
+        return s;
+    }
 }
