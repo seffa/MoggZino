@@ -1,4 +1,12 @@
 package org.example.game;
 
-public class QuickGame {
+import java.util.Random;
+
+public abstract class QuickGame extends Game {
+    protected QuickGame(Random random) {
+        super(random);
+    }
+
+    public abstract int play(int bet);
+    public abstract String result();
 }

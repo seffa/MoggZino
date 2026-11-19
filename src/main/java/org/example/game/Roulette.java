@@ -1,43 +1,33 @@
-package org.example.LV2;
+package org.example.game;
+
+import org.example.Phrases;
 
 import java.util.Random;
 
-public class Roulette {
-    private Random random = new Random();
-    private static final int[] RED_NUMBERS = {
-            1, 3, 5, 7, 9, 12, 14, 16, 18,
-            19, 21, 23, 25, 27, 30, 32, 34, 36
-    };
-    private String field;
+public class Roulette extends QuickGame {
+    private final int number;
+    private final Color betOn;
 
-    public Roulette(){
-        field = getColor();
+    public Roulette(Random random, Color betOn) {
+        super(random);
+        this.betOn = betOn;
+        number = random.nextInt(37);
     }
 
-    private boolean isRed(int n) {
-        for (int r : RED_NUMBERS) {
-            if (r == n) return true;
-        }
-        return false;
+    @Override public String id() { return "roulette"; }
+    @Override public String rules() { return new Phrases().GetRoulette(); }
+
+    public static int payout(int number, Color betOn, int bet) {
+        if (Color.of(number) != betOn) return -bet;
+        return betOn == Color.ZERO ? bet * 35 : bet;
     }
 
-    private String getColor(){
-        int SpinNumber = random.nextInt(37);
-        if (SpinNumber == 0) return "зеро";
-        else if (isRed(SpinNumber)) return "красное";
-        else return "черное";
+    @Override public int play(int bet) { return payout(number, betOn, bet); }
+
+    @Override public String result() {
+        Color color = Color.of(number);
+        return color.mark() + " выпало " + number + " (" + color.text() + ")";
     }
 
-    public int game(int dep, int bet, String betType){
-        if (field.equals("красное") && betType.equals("красное")) return dep+bet;
-        else if (field.equals("черное") && betType.equals("черное")) return dep+bet;
-        else if (field.equals("зеро") && betType.equals("зеро")) return dep + bet*35;
-        else return dep - bet;
-    }
-
-    public String getResult(){
-        if (field.equals("красное")) return "\uD83D\uDD34 выпало красное";
-        else if (field.equals("черное")) return "⚫ выпало черное";
-        else return "\uD83D\uDFE2 выпало зеро";
-    }
+    public int number() { return number; }
 }

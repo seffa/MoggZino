@@ -1,4 +1,5 @@
 package org.example.game;
 
-public class Roll {
+public record Roll(int first, int second) {
+    public int sum() { return first + second; }
 }

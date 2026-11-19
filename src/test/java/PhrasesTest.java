@@ -1,74 +1,44 @@
 package org.example;
 
+import org.example.game.Symbol;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PhrasesTest {
 
+    private final Phrases phrases = new Phrases();
+
     @Test
-    void testGetHelp() {
-        Phrases p = new Phrases();
-        String h = p.GetHelp();
-        assertNotNull(h);
-        assertTrue(h.contains("ПРАВИЛА УРОВНЕЙ"));
-        assertTrue(h.contains("\\help"));
+    void allTextsAreFilled() {
+        List<String> texts = List.of(
+                phrases.GetHelp(), phrases.GetGreeting(), phrases.GetRulesLevel2(), phrases.GetRulesLevel3(),
+                phrases.GetRulesBones(), phrases.GetSlots(), phrases.GetRoulette(), phrases.GetRussianRoulette(),
+                phrases.GetBlackjack(), phrases.GetUpgrader(), phrases.GetError(), phrases.GetDefeat(), phrases.GetWin());
+        for (String text : texts) {
+            assertNotNull(text);
+            assertFalse(text.isBlank());
+        }
     }
 
     @Test
-    void testGetGreeting() {
-        Phrases p = new Phrases();
-        String g = p.GetGreeting();
-        assertNotNull(g);
-        assertTrue(g.contains("Добро пожаловать"));
-    }
+    void greetingHasDepositPlaceholder() { assertTrue(phrases.GetGreeting().contains("{deposit}")); }
 
     @Test
-    void testGetRulesLevel1() {
-        Phrases p = new Phrases();
-        String r = p.GetRulesLevel1();
-        assertNotNull(r);
-        assertTrue(r.contains("ДОСТУПНЫЕ ИГРЫ"));
-        assertTrue(r.contains("кости"));
-        assertTrue(r.contains("слоты"));
-    }
+    void winHasDepositPlaceholder() { assertTrue(phrases.GetWin().contains("{deposit}")); }
 
     @Test
-    void testGetSlots() {
-        Phrases p = new Phrases();
-        String s = p.GetSlots();
-        assertNotNull(s);
-        assertTrue(s.contains("СЛОТЫ"));
-    }
+    void defeatMentionsZeroDeposit() { assertTrue(phrases.GetDefeat().contains("ДЕПОЗИТ = 0")); }
 
     @Test
-    void testGetBones() {
-        Phrases p = new Phrases();
-        String b = p.GetRulesBones();
-        assertNotNull(b);
-        assertTrue(b.contains("КОСТИ"));
-    }
+    void helpMentionsButtons() { assertTrue(phrases.GetHelp().toLowerCase().contains("кнопк")); }
 
     @Test
-    void testGetError() {
-        Phrases p = new Phrases();
-        String e = p.GetError();
-        assertNotNull(e);
-        assertTrue(e.contains("ошибка"));
-    }
-
-    @Test
-    void testGetDefeat() {
-        Phrases p = new Phrases();
-        String d = p.GetDefeat();
-        assertNotNull(d);
-        assertTrue(d.contains("ДЕПОЗИТ = 0"));
-    }
-
-    @Test
-    void testGetWin() {
-        Phrases p = new Phrases();
-        String w = p.GetWin();
-        assertNotNull(w);
-        assertTrue(w.contains("ПОБЕДА"));
+    void slotsRulesListEverySymbol() {
+        for (Symbol symbol : Symbol.values()) {
+            assertTrue(phrases.GetSlots().contains(symbol.label()), "в правилах нет символа " + symbol);
+        }
     }
 }

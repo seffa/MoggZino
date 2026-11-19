@@ -5,7 +5,7 @@ import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
+//надо короче поменять тесты с рандома на полиморфизм. чтою ттипа там че то проивзролная от функциональности а не сам ранлом ну тип чтобы рандом бьыл детерминированным
 public class Main {
     public static void main(String[] args) {
         // токен от botfather

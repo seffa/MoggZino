@@ -1,71 +1,45 @@
-package org.example.LV1;
+package org.example.game;
 
 import org.example.Phrases;
 
 import java.util.Random;
 
-public class Slots {
+public class Slots extends QuickGame {
+    private static final int REELS = 3;
+    private final Symbol[] spin = new Symbol[REELS];
 
-    private static final int reels = 3; //кол-во барабанов
-
-
-    private Random random = new Random();
-    private String[] spin = new String[reels];
-
-    public Slots() {
-        for (int i = 0; i < reels; i++) {
-            spin[i] = getRandomSymbol();
-        }
+    public Slots(Random random) {
+        super(random);
+        for (int i = 0; i < REELS; i++) spin[i] = Symbol.pick(random);
     }
 
-    private String getRandomSymbol() {
-        int roll = random.nextInt(100);
-        if (roll < 40) return "\uD83C\uDF52";
-        if (roll < 70) return "\uD83C\uDF4B";
-        if (roll < 90) return "BAR";
-        return "7";
-    }
+    @Override public String id() { return "slots"; }
+    @Override public String rules() { return new Phrases().GetSlots(); }
 
-    public int game(int depos, int bet) {
-        int max = 1;
-        for (int i = 0; i < reels; i++) {
+    public static int payout(Symbol[] spin, int bet) {
+        int best = 1;
+        for (Symbol symbol : spin) {
             int count = 0;
-            for (int j = 0; j < reels; j++) {
-                if (spin[i].equals(spin[j])){
-                    count++;
-                }
+            for (Symbol other : spin) {
+                if (other == symbol) count++;
             }
-            if (count > max){
-                max = count;
-            }
+            best = Math.max(best, count);
         }
-
-        if (max == reels) {
-            if (spin[0].equals("\uD83C\uDF52")){
-                return depos + bet * 2;
-            }
-            if (spin[0].equals("\uD83C\uDF4B")) {
-                return depos + bet * 3;
-            }
-            if (spin[0].equals("BAR")){
-                return depos + bet * 5;
-            }
-            return depos + bet * 10;
-        } else if (max >= 2) {
-            return depos;
-        } else {
-            return depos - bet;
-        }
+        if (best == spin.length) return bet * spin[0].multiplier();
+        if (best >= 2) return 0;
+        return -bet;
     }
 
-    public String getResult() {
-        String s = "";
-        for (int i = 0; i < reels; i++) {
-            if (i > 0) {
-                s += " | ";
-            }
-            s += spin[i];
+    public static String text(Symbol[] spin) {
+        StringBuilder line = new StringBuilder();
+        for (Symbol symbol : spin) {
+            if (line.length() > 0) line.append(" | ");
+            line.append(symbol.label());
         }
-        return s;
+        return line.toString();
     }
+
+    @Override public int play(int bet) { return payout(spin, bet); }
+    @Override public String result() { return text(spin); }
+    public Symbol[] spin() { return spin.clone(); }
 }

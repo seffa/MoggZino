@@ -1,32 +1,32 @@
-package org.example.LV1;
+package org.example.game;
+
+import org.example.Phrases;
 
 import java.util.Random;
 
-public class Bones {
-    private int d1, d2;
-    private Random random = new Random();
+public class Bones extends QuickGame {
+    private final Roll roll;
 
-    public Bones() {
-        d1 = getDice();
-        d2 = getDice();
+    public Bones(Random random) {
+        super(random);
+        roll = new Roll(random.nextInt(6) + 1, random.nextInt(6) + 1);
     }
 
-    private int getDice() {
-        return random.nextInt(6) + 1;
+    @Override public String id() { return "bones"; }
+    @Override public String rules() { return new Phrases().GetRulesBones(); }
+
+    public static int payout(Roll roll, int bet) {
+        int sum = roll.sum();
+        if (sum == 7 || sum == 11) return bet * 3;
+        if (sum == 2 || sum == 12) return -bet;
+        return 0;
     }
 
-    public int game(int dep, int bet) {
-        int sum = d1 + d2;
-        if (sum == 7 || sum == 11) {
-            return dep + bet * 3;
-        } else if (sum == 2 || sum == 12) {
-            return dep - bet;
-        } else {
-            return dep;
-        }
+    public static String text(Roll roll) {
+        return "🎲 " + roll.first() + " + " + roll.second() + " = " + roll.sum();
     }
 
-    public String getResult() {
-        return "🎲 " + d1 + " + " + d2 + " = " + (d1 + d2);
-    }
+    @Override public int play(int bet) { return payout(roll, bet); }
+    @Override public String result() { return text(roll); }
+    public Roll roll() { return roll; }
 }

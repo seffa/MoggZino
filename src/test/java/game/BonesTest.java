@@ -1,58 +1,49 @@
-package org.example;
+package org.example.game;
 
-import org.example.game.Bones;
 import org.junit.jupiter.api.Test;
+
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BonesTest {
 
     @Test
-    void testGame() {
-        Bones bones = new Bones();
-        int d = 100;
-        int b = 10;
-        int r = bones.game(d, b);
-        assertTrue(r >= d - b && r <= d + b * 3);
-    }
+    void sevenPaysTriple() { assertEquals(30, Bones.payout(new Roll(3, 4), 10)); }
 
     @Test
-    void testGame2() {
-        Bones bones = new Bones();
-        int d = 100;
-        int b = 10;
-        int r = bones.game(d, b);
-        assertTrue(r <= d + b * 3);
-    }
+    void elevenPaysTriple() { assertEquals(30, Bones.payout(new Roll(5, 6), 10)); }
 
     @Test
-    void testGame3() {
-        Bones bones = new Bones();
-        int d = 100;
-        int b = 10;
-        int r = bones.game(d, b);
-        assertTrue(r >= d - b);
-    }
+    void twoLoses() { assertEquals(-10, Bones.payout(new Roll(1, 1), 10)); }
 
     @Test
-    void testGetResult() {
-        Bones bones = new Bones();
-        String r = bones.getResult();
-        assertNotNull(r);
-        assertTrue(r.contains("🎲"));
-        assertTrue(r.contains("+"));
-        assertTrue(r.contains("="));
-    }
+    void twelveLoses() { assertEquals(-10, Bones.payout(new Roll(6, 6), 10)); }
 
     @Test
-    void testDiceRange() {
-        for (int i = 0; i < 100; i++) {
-            Bones bones = new Bones();
-            String r = bones.getResult();
-            String[] p = r.split("[^0-9]+");
-            int d1 = Integer.parseInt(p[1]);
-            int d2 = Integer.parseInt(p[2]);
-            assertTrue(d1 >= 1 && d1 <= 6);
-            assertTrue(d2 >= 1 && d2 <= 6);
+    void otherSumsReturnBet() {
+        for (int first = 1; first <= 6; first++) {
+            for (int second = 1; second <= 6; second++) {
+                int sum = first + second;
+                if (sum == 7 || sum == 11 || sum == 2 || sum == 12) continue;
+                assertEquals(0, Bones.payout(new Roll(first, second), 10));
+            }
         }
     }
+
+    @Test
+    void payoutScalesWithBet() { assertEquals(3, Bones.payout(new Roll(3, 4), 1)); }
+
+    @Test
+    void diceStayInRange() {
+        Random random = new Random(1);
+        for (int i = 0; i < 1000; i++) {
+            Roll roll = new Bones(random).roll();
+            assertTrue(roll.first() >= 1 && roll.first() <= 6);
+            assertTrue(roll.second() >= 1 && roll.second() <= 6);
+        }
+    }
+
+    @Test
+    void textShowsSum() { assertEquals("🎲 3 + 4 = 7", Bones.text(new Roll(3, 4))); }
 }
