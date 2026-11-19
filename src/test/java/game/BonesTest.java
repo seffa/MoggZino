@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.LV1.Bones;
+import org.example.game.Bones;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
