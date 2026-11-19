@@ -1,5 +1,7 @@
-package org.example;
+package org.example.Bot;
 
+import org.example.LV1.Level1;
+import org.example.Phrases;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;

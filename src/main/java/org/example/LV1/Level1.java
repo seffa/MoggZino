@@ -1,4 +1,6 @@
-package org.example;
+package org.example.LV1;
+
+import org.example.Phrases;
 
 public class Level1 {
     private Phrases P_lv1;

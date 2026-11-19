@@ -1,4 +1,6 @@
-package org.example;
+package org.example.LV1;
+
+import org.example.Phrases;
 
 import java.util.Random;
 
@@ -14,10 +16,6 @@ public class Slots {
         for (int i = 0; i < reels; i++) {
             spin[i] = getRandomSymbol();
         }
-    }
-
-    public String Start() {
-        return new Phrases().GetSlots();
     }
 
     private String getRandomSymbol() {
