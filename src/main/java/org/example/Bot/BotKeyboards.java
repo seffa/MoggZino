@@ -1,57 +1,62 @@
 package org.example.Bot;
 
+import org.example.hall.Level;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BotKeyboards {
 
-    public static InlineKeyboardMarkup getLevel1Keyboard() {
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+    private static final Map<String, String> TITLES = Map.of(
+            "bones", "🎲 Кости",
+            "slots", "🎰 Слоты",
+            "roulette", "🎡 Рулетка",
+            "russian_roulette", "🔫 Русская рулетка",
+            "blackjack", "🃏 Блэкджек",
+            "upgrader", "⬆️ Апгрейдер");
+
+    public static String title(String id) { return TITLES.getOrDefault(id, id); }
+
+    private static InlineKeyboardButton button(String text, String data) {
+        InlineKeyboardButton b = new InlineKeyboardButton();
+        b.setText(text);
+        b.setCallbackData(data);
+        return b;
+    }
+
+    public static InlineKeyboardMarkup hall(Level hall) {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> games = new ArrayList<>();
+        for (String id : hall.ids()) {
+            games.add(button(title(id), "menu_" + id));
+        }
+        rows.add(games);
+        rows.add(List.of(button("Депозит", "menu_status"), button("Помощь", "menu_help")));
+        rows.add(List.of(button("Сброс", "menu_reset")));
 
-
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-
-        InlineKeyboardButton bones = new InlineKeyboardButton();
-        bones.setText("Кости");
-        bones.setCallbackData("menu_bones");
-        row1.add(bones);
-
-        InlineKeyboardButton slots = new InlineKeyboardButton();
-        slots.setText("Слоты");
-        slots.setCallbackData("menu_slots");
-        row1.add(slots);
-
-        rows.add(row1);
-
-
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
-
-        InlineKeyboardButton status = new InlineKeyboardButton();
-        status.setText("Депозит");
-        status.setCallbackData("menu_status");
-        row2.add(status);
-
-        InlineKeyboardButton help = new InlineKeyboardButton();
-        help.setText("Помощь");
-        help.setCallbackData("menu_help");
-        row2.add(help);
-
-        rows.add(row2);
-
-        List<InlineKeyboardButton> row3 = new ArrayList<>();
-
-        InlineKeyboardButton reset = new InlineKeyboardButton();
-        reset.setText("Сброс");
-        reset.setCallbackData("menu_reset");
-        row3.add(reset);
-
-        rows.add(row3);
-
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         markup.setKeyboard(rows);
+        return markup;
+    }
+
+    public static InlineKeyboardMarkup broke() {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(List.of(
+                List.of(button("Сброс", "menu_reset")),
+                List.of(button("Помощь", "menu_help"))));
+        return markup;
+    }
+
+    public static InlineKeyboardMarkup options(List<String> options) {
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        for (String option : options) {
+            row.add(button(option, "opt_" + option));
+        }
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(List.of(row));
         return markup;
     }
 }

@@ -4,7 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8e46a86b-b3f4-40af-9ed5-6062a0d686b2" name="Changes" comment="bones + test" />
+    <list default="true" id="8e46a86b-b3f4-40af-9ed5-6062a0d686b2" name="Changes" comment="new tets struct and bag fix + dir">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/hall/Level.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/hall/Level3.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/hall/Levels.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/player/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/player/Players.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/hall/Level3Test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/hall/LevelsTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/player/PlayerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/player/PlayersTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot/BotKeyboards.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot/BotKeyboards.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot/BotSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot/BotSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot/MoggzinBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot/MoggzinBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/LV1/Level1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/hall/Level1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/LV2/Level2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/hall/Level2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Phrases.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Phrases.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/LV1/Lelel1Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/hall/Lelel1Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/LV2/Level2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/hall/Level2Test.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,27 +72,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.chatbot [test].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/LECOO/IdeaProjects/moggzin/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Maven.chatbot [test].executor": "Run",
+    "Maven.moggzino [test].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "C:/Users/LECOO/IdeaProjects/moggzin/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "MavenSettings"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="TELEGRAM_BOT_TOKEN" value="9229648701:AAElQA5Rd91UtGf2DCMYfG8baZigsiYc_co" />
         <env name="TELEGRAM_BOT_USERNAME" value="moggzino_bot" />
+        <env name="TELEGRAM_ADMIN_ID" value="1414477166" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="org.example.Main" />
       <module name="moggzin" />

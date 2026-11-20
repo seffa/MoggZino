@@ -5,10 +5,9 @@ import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-//надо короче поменять тесты с рандома на полиморфизм. чтою ттипа там че то проивзролная от функциональности а не сам ранлом ну тип чтобы рандом бьыл детерминированным
+
 public class Main {
     public static void main(String[] args) {
-        // токен от botfather
         String token = System.getenv("TELEGRAM_BOT_TOKEN");
         String username = System.getenv("TELEGRAM_BOT_USERNAME");
         if (token == null || token.isBlank()) {
@@ -18,6 +17,17 @@ public class Main {
         if (username == null || username.isBlank()) {
             System.out.println("не задан username бота");
             return;
+        }
+
+        long adminId = 0;
+        String admin = System.getenv("TELEGRAM_ADMIN_ID");
+        if (admin != null && !admin.isBlank()) {
+            try {
+                adminId = Long.parseLong(admin.trim());
+            } catch (NumberFormatException e) {
+                System.out.println("кривой TELEGRAM_ADMIN_ID");
+                return;
+            }
         }
 
         DefaultBotOptions options = new DefaultBotOptions();
@@ -37,8 +47,8 @@ public class Main {
 
         try {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
-            api.registerBot(new MoggzinBot(token, username, options));
-            System.out.println("бот запущен");
+            api.registerBot(new MoggzinBot(token, username, options, adminId));
+            System.out.println("бот запущен, админ: " + (adminId == 0 ? "не задан" : adminId));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
