@@ -3,6 +3,7 @@ package org.example.hall;
 import org.example.game.Color;
 import org.example.game.QuickGame;
 import org.example.game.Roulette;
+import org.example.game.RussianRoulette; // <--- Добавили импорт
 
 import java.util.List;
 import java.util.Random;
@@ -24,10 +25,15 @@ public class Level2 extends Level {
     }
 
     @Override
-    public QuickGame create(String id, String option) {
-        if (!id.equals("roulette")) return null;
-        Color color = Color.fromText(option);
-        if (color == null) return null;
-        return new Roulette(random, color);
+    public QuickGame create(String id, String option, int balance) {
+        if (id.equals("roulette")) {
+            Color color = Color.fromText(option);
+            if (color == null) return null;
+            return new Roulette(random, color);
+        }
+        if (id.equals("russian_roulette")) {
+            return new RussianRoulette(random);
+        }
+        return null;
     }
 }

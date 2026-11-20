@@ -1,5 +1,6 @@
 package org.example.player;
 
+import org.example.game.InteractiveGame;
 import org.example.hall.Level;
 import org.example.hall.Levels;
 
@@ -15,6 +16,8 @@ public class Player {
     private String waiting;
     private String option;
     private boolean apology;
+    private InteractiveGame activeGame;
+
 
     public Player(long userId, Random random) {
         this.userId = userId;
@@ -33,6 +36,10 @@ public class Player {
     public boolean broke() { return deposit == 0; }
     public boolean canBet(int bet) { return !broke() && bet > 0 && bet <= deposit; }
     public boolean canReset() { return broke() && apology; }
+
+    public InteractiveGame getActiveGame() { return activeGame; }
+    public void setActiveGame(InteractiveGame game) { this.activeGame = game; }
+    public void clearActiveGame() { this.activeGame = null; }
 
     public void wait(String gameId) { wait(gameId, null); }
 
@@ -65,6 +72,7 @@ public class Player {
         hall = Levels.create(1, random);
         stopWaiting();
         apology = false;
+        activeGame = null;
         return true;
     }
 

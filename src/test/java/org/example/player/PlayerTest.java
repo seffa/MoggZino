@@ -1,5 +1,6 @@
 package org.example.player;
 
+import org.example.game.Game;
 import org.example.game.QuickGame;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ class PlayerTest {
         Player player = player();
         player.apply(4900);
         assertEquals(3, player.level());
-        assertTrue(player.hall().has("slots"));
+        assertTrue(player.hall().has("upgrader"));
     }
 
     @Test
@@ -102,6 +103,9 @@ class PlayerTest {
     void resetReturnsToFirstHall() {
         Player player = player();
         player.apply(4900);
+        assertEquals(3, player.level());
+        player.apply(-5000);
+        player.apologize();
         player.reset();
         assertEquals(1, player.level());
         assertEquals(100, player.deposit());
@@ -190,6 +194,7 @@ class PlayerTest {
     void resetRestoresDeposit() {
         Player player = player();
         player.apply(-100);
+        player.apologize();
         player.reset();
         assertEquals(100, player.deposit());
         assertFalse(player.broke());
@@ -199,6 +204,8 @@ class PlayerTest {
     @Test
     void resetClearsWaiting() {
         Player player = player();
+        player.apply(-100);
+        player.apologize();
         player.wait("bones");
         player.reset();
         assertNull(player.waiting());
@@ -218,8 +225,10 @@ class PlayerTest {
         Player player = player();
         for (int i = 0; i < 500 && !player.broke(); i++) {
             int bet = Math.min(10, player.deposit());
-            QuickGame game = player.hall().create(i % 2 == 0 ? "bones" : "slots");
-            player.apply(game.play(bet));
+            Game game = player.hall().create(i % 2 == 0 ? "bones" : "slots", null, player.deposit());
+            if (game instanceof QuickGame qg) {
+                player.apply(qg.play(bet));
+            }
             assertTrue(player.deposit() >= 0);
         }
     }

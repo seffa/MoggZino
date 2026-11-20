@@ -1,5 +1,6 @@
 package org.example.hall;
 
+import org.example.game.RussianRoulette;
 import org.example.game.Roulette;
 import org.junit.jupiter.api.Test;
 
@@ -23,10 +24,10 @@ class Level2Test {
     }
 
     @Test
-    void createsRoulette() { assertInstanceOf(Roulette.class, hall.create("roulette", "красное")); }
+    void createsRoulette() { assertInstanceOf(Roulette.class, hall.create("roulette", "красное", 100)); }
 
     @Test
-    void unknownColorIsNull() { assertNull(hall.create("roulette", "фиолетовое")); }
+    void unknownColorIsNull() { assertNull(hall.create("roulette", "фиолетовое", 100)); }
 
     @Test
     void thresholdIsTwoThousand() { assertEquals(2000, hall.threshold()); }
@@ -40,11 +41,13 @@ class Level2Test {
     void otherGamesHaveNoOptions() { assertTrue(hall.options("russian_roulette").isEmpty()); }
 
     @Test
-    void missingOptionIsNull() { assertNull(hall.create("roulette")); }
+    void missingOptionIsNull() { assertNull(hall.create("roulette", null, 100)); }
 
     @Test
-    void russianRouletteNotReadyYet() { assertNull(hall.create("russian_roulette", "красное")); }
+    void createsRussianRoulette() {
+        assertInstanceOf(RussianRoulette.class, hall.create("russian_roulette", null, 100));
+    }
 
     @Test
-    void unknownGameIsNull() { assertNull(hall.create("poker", "красное")); }
+    void unknownGameIsNull() { assertNull(hall.create("poker", "красное", 100)); }
 }

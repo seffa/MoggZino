@@ -26,14 +26,14 @@ class Level1Test {
     void thresholdIsZero() { assertEquals(0, hall.threshold()); }
 
     @Test
-    void createsBones() { assertInstanceOf(Bones.class, hall.create("bones")); }
+    void createsBones() { assertInstanceOf(Bones.class, hall.create("bones", null, 0)); }
 
     @Test
-    void createsSlots() { assertInstanceOf(Slots.class, hall.create("slots")); }
+    void createsSlots() { assertInstanceOf(Slots.class, hall.create("slots", null, 0)); }
 
     @Test
-    void unknownGameIsNull() { assertNull(hall.create("poker")); }
+    void unknownGameIsNull() { assertNull(hall.create("poker", null, 0)); }
 
     @Test
-    void createsFreshInstances() { assertNotSame(hall.create("bones"), hall.create("bones")); }
+    void createsFreshInstances() { assertNotSame(hall.create("bones", null, 0), hall.create("bones", null, 0)); }
 }

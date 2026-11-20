@@ -59,4 +59,12 @@ public class BotKeyboards {
         markup.setKeyboard(List.of(row));
         return markup;
     }
+
+    public static InlineKeyboardMarkup blackjack() {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(List.of(
+                List.of(button("Взять карту", "bj_hit"), button("Хватит", "bj_stand"))
+        ));
+        return markup;
+    }
 }

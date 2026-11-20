@@ -17,7 +17,7 @@ public class Level1 extends Level {
     @Override public List<String> ids() { return List.of("bones", "slots"); }
 
     @Override
-    public QuickGame create(String id, String option) {
+    public QuickGame create(String id, String option, int balance) { // ДОБАВИЛИ balance
         return switch (id) {
             case "bones" -> new Bones(random);
             case "slots" -> new Slots(random);

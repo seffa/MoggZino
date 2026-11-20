@@ -1,6 +1,9 @@
 package org.example.Bot;
 
 import org.example.Phrases;
+import org.example.game.InteractiveGame;
+import org.example.game.Blackjack;
+import org.example.game.Game;
 import org.example.game.QuickGame;
 import org.example.player.Player;
 import org.example.player.Players;
@@ -57,6 +60,31 @@ public class MoggzinBot extends TelegramLongPollingBot {
         long cid = msg.getChatId();
         Player player = players.get(cq.getFrom().getId());
 
+        if (data.equals("bj_hit") || data.equals("bj_stand")) {
+            InteractiveGame game = player.getActiveGame();
+            if (game == null || game.isFinished()) {
+                sender.sendCustomMenu(cid, "Игра уже окончена.", keyboard(player));
+                return;
+            }
+
+            if (data.equals("bj_hit")) game.hit();
+            else game.stand();
+
+            if (game.isFinished()) {
+                player.apply(game.getDelta());
+                player.clearActiveGame();
+                sender.sendCustomMenu(cid, game.state() + "\n\nтвой депозит: " + player.deposit(), keyboard(player));
+            } else {
+                sender.sendCustomMenu(cid, game.state(), BotKeyboards.blackjack());
+            }
+            return;
+        }
+
+        if (player.getActiveGame() != null) {
+            sender.sendCustomMenu(cid, "Сначала заверши игру в Блэкджек! (Взять карту или Хватит)", BotKeyboards.blackjack());
+            return;
+        }
+
         if (data.startsWith("opt_")) {
             chooseOption(cid, player, data.substring(4));
             return;
@@ -75,7 +103,7 @@ public class MoggzinBot extends TelegramLongPollingBot {
                     keyboard(player));
             case "help" -> sender.sendCustomMenu(cid, ph.GetHelp(), keyboard(player));
             case "reset" -> resetPlayer(cid, player);
-            default -> { }
+            default -> sender.sendText(cid, "Эта игра недоступна в твоем текущем зале. Нажми /start, чтобы обновить меню.");
         }
     }
 
@@ -129,7 +157,7 @@ public class MoggzinBot extends TelegramLongPollingBot {
             return;
         }
 
-        QuickGame probe = player.hall().create(id);
+        Game probe = player.hall().create(id, null, player.deposit());
         if (probe == null) {
             sender.sendText(cid, "Эта игра пока не готова");
             return;
@@ -145,7 +173,7 @@ public class MoggzinBot extends TelegramLongPollingBot {
             sender.sendCustomMenu(cid, "Сначала выбери игру", keyboard(player));
             return;
         }
-        QuickGame probe = player.hall().create(id, option);
+        Game probe = player.hall().create(id, option, player.deposit());
         if (probe == null) {
             sender.sendText(cid, ph.GetError());
             return;
@@ -162,6 +190,10 @@ public class MoggzinBot extends TelegramLongPollingBot {
         String text = msg.getText().trim();
 
         if (text.equalsIgnoreCase("/start")) {
+            if (player.getActiveGame() != null) {
+                sender.sendCustomMenu(cid, "Сначала заверши игру в Блэкджек!", BotKeyboards.blackjack());
+                return;
+            }
             player.stopWaiting();
             String hello = ph.GetGreeting()
                     .replace("{deposit}", String.valueOf(player.deposit()))
@@ -195,21 +227,36 @@ public class MoggzinBot extends TelegramLongPollingBot {
             return;
         }
 
-        QuickGame game = player.hall().create(id, player.option());
+        Game game = player.hall().create(id, player.option(), player.deposit());
         if (game == null) {
             player.stopWaiting();
             sender.sendText(cid, ph.GetError());
             return;
         }
 
-        int before = player.level();
-        player.apply(game.play(bet));
+        if (game instanceof QuickGame quickGame) {
+            int before = player.level();
+            player.apply(quickGame.play(bet));
 
-        String answer = game.result() + "\nтвой депозит: " + player.deposit();
-        if (player.level() > before) answer += "\n\n" + levelUpText(player.level());
-        if (player.broke()) answer += "\n\n" + ph.GetDefeat();
+            String answer = quickGame.result() + "\nтвой депозит: " + player.deposit();
+            if (player.level() > before) answer += "\n\n" + levelUpText(player.level());
+            if (player.broke()) answer += "\n\n" + ph.GetDefeat();
 
-        sender.sendCustomMenu(cid, answer, keyboard(player));
+            sender.sendCustomMenu(cid, answer, keyboard(player));
+
+        } else if (game instanceof Blackjack blackjack) {
+            player.setActiveGame(blackjack);
+            player.stopWaiting();
+            blackjack.start(bet);
+
+            if (blackjack.isFinished()) {
+                player.apply(blackjack.getDelta());
+                player.clearActiveGame();
+                sender.sendCustomMenu(cid, blackjack.state() + "\n\nтвой депозит: " + player.deposit(), keyboard(player));
+            } else {
+                sender.sendCustomMenu(cid, blackjack.state(), BotKeyboards.blackjack());
+            }
+        }
     }
 
     private org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup keyboard(Player player) {
